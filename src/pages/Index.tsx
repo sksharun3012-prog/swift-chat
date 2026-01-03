@@ -1,14 +1,28 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+import { useState, useEffect } from "react";
+import UsernameDialog from "@/components/chat/UsernameDialog";
+import ChatContainer from "@/components/chat/ChatContainer";
 
 const Index = () => {
-  return (
-    <div className="flex min-h-screen items-center justify-center bg-background">
-      <div className="text-center">
-        <h1 className="mb-4 text-4xl font-bold">Welcome to Your Blank App</h1>
-        <p className="text-xl text-muted-foreground">Start building your amazing project here!</p>
-      </div>
-    </div>
-  );
+  const [username, setUsername] = useState<string | null>(null);
+
+  // Check for stored username on mount
+  useEffect(() => {
+    const storedUsername = sessionStorage.getItem("chat-username");
+    if (storedUsername) {
+      setUsername(storedUsername);
+    }
+  }, []);
+
+  const handleSetUsername = (name: string) => {
+    sessionStorage.setItem("chat-username", name);
+    setUsername(name);
+  };
+
+  if (!username) {
+    return <UsernameDialog onSubmit={handleSetUsername} />;
+  }
+
+  return <ChatContainer username={username} />;
 };
 
 export default Index;
